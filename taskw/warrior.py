@@ -188,6 +188,14 @@ class TaskWarriorBase(with_metaclass(abc.ABCMeta, object)):
 
         return d
 
+    @abc.abstractmethod
+    def task_start(self, **kw):
+        pass
+
+    @abc.abstractmethod
+    def task_stop(self, **kw):
+        pass
+
 
 class TaskWarriorDirect(TaskWarriorBase):
     """ Interacts with taskwarrior by directly manipulating the ~/.task/ db.
@@ -319,6 +327,14 @@ class TaskWarriorDirect(TaskWarriorBase):
                 raise ValueError("Task is already deleted.")
 
         return self._task_change_status(Status.DELETED, validate, **kw)
+
+    def task_start(self, **kw):
+        """ Marks a task as started.  """
+        raise NotImplementedError()
+
+    def task_stop(self, **kw):
+        """ Marks a task as stopped.  """
+        raise NotImplementedError()
 
     def _task_replace(self, id, category, task):
         def modification(lines):
@@ -634,10 +650,25 @@ class TaskWarriorShellout(TaskWarriorBase):
         self._execute(id, 'delete')
         return self.get_task(uuid=task['uuid'])[1]
 
+    def task_start(self, **kw):
+        """ Marks a task as started.  """
+
+        id, task = self.get_task(**kw)
+
+        self._execute(id, 'start')
+        return self.get_task(uuid=task['uuid'])[1]
+
+    def task_stop(self, **kw):
+        """ Marks a task as stopped.  """
+
+        id, task = self.get_task(**kw)
+
+        self._execute(id, 'stop')
+        return self.get_task(uuid=task['uuid'])[1]
+
     def task_info(self, **kw):
         id, task = self.get_task(**kw)
-        self._get_json('info', id)
-        out, err = info.communicate()
+        out, err = self._execute(id, 'info')
         if err:
             return err
         return out
