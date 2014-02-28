@@ -40,7 +40,7 @@ decode_replacements = OrderedDict([
 ])
 
 
-def encode_task_value(value):
+def encode_task_value(value, escape_parentheses=False):
     if value is None:
         value = ''
     elif isinstance(value, datetime.datetime):
@@ -55,18 +55,23 @@ def encode_task_value(value):
     elif isinstance(value, six.string_types):
         for unsafe, safe in six.iteritems(encode_replacements_experimental):
             value = value.replace(unsafe, safe)
+        if escape_parentheses:
+            # In some contexts, parentheses are interpreted for use in
+            # logical expressions.  They must *sometimes* be escaped.
+            for left, right in (('(', '\\('), (')', '\\)')):
+                value = value.replace(left, right)
     else:
         value = str(value)
     return value
 
 
-def encode_query(value):
+def encode_query(value, escape_parentheses=False):
     args = []
     for k, v in six.iteritems(value):
         args.append(
             '%s:\"%s\"' % (
                 k,
-                encode_task_value(v)
+                encode_task_value(v, escape_parentheses=escape_parentheses)
             )
         )
     return args
