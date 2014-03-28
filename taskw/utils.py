@@ -39,6 +39,69 @@ decode_replacements = OrderedDict([
     if k not in ('\n')  # We skip these.
 ])
 
+logical_replacements = OrderedDict([
+    ('?', '\\?'),
+    ('+', '\\+'),
+    ('"', '\\"'),
+    ('(', '\\('),
+    (')', '\\)'),
+    ('[', '\\['),
+    (']', '\\]'),
+    ('{', '\\{'),
+    ('}', '\\}'),
+])
+
+
+def encode_task_value(value, query=False):
+    if value is None:
+        value = ''
+    elif isinstance(value, datetime.datetime):
+        if not value.tzinfo:
+            #  Dates not having timezone information should be
+            #  assumed to be in local time
+            value = value.replace(tzinfo=dateutil.tz.tzlocal())
+        #  All times should be converted to UTC before serializing
+        value = value.astimezone(pytz.utc).strftime(DATE_FORMAT)
+    elif isinstance(value, datetime.date):
+        value = value.strftime(DATE_FORMAT)
+    elif isinstance(value, six.string_types):
+        if query:
+            # In some contexts, parentheses are interpreted for use in
+            # logical expressions.  They must *sometimes* be escaped.
+            for left, right in six.iteritems(logical_replacements):
+                value = value.replace(left, right)
+        else:
+            for unsafe, safe in six.iteritems(
+                encode_replacements_experimental
+            ):
+                value = value.replace(unsafe, safe)
+    else:
+        value = str(value)
+    return value
+
+
+def encode_query(value):
+    args = []
+
+    if isinstance(value, dict):
+        value = six.iteritems(value)
+
+    for k, v in value:
+        if isinstance(v, list):
+            args.append(
+                "(" + (" %s " % k).join([
+                    encode_query([item])[0] for item in v
+                ]) + ")"
+            )
+        else:
+            args.append(
+                '%s:\"%s\"' % (
+                    k,
+                    encode_task_value(v, query=True)
+                )
+            )
+    return args
+
 
 def clean_task(task):
     """ Clean a task by replacing any dangerous characters """
@@ -54,20 +117,7 @@ def encode_task_experimental(task):
     if 'tags' in task:
         task['tags'] = ','.join(task['tags'])
     for k in task:
-        if task[k] is None:
-            task[k] = ''
-        elif isinstance(task[k], datetime.datetime):
-            if not task[k].tzinfo:
-                #  Dates not having timezone information should be
-                #  assumed to be in local time
-                task[k] = task[k].replace(tzinfo=dateutil.tz.tzlocal())
-            #  All times should be converted to UTC before serializing
-            task[k] = task[k].astimezone(pytz.utc).strftime(DATE_FORMAT)
-        elif isinstance(task[k], datetime.date):
-            task[k] = task[k].strftime(DATE_FORMAT)
-        elif isinstance(task[k], six.string_types):
-            for unsafe, safe in six.iteritems(encode_replacements_experimental):
-                task[k] = task[k].replace(unsafe, safe)
+        task[k] = encode_task_value(task[k])
 
     # Then, format it as a string
     return "%s\n" % " ".join([
@@ -117,3 +167,52 @@ def decode_task(line):
     if 'tags' in task:
         task['tags'] = task['tags'].split(',')
     return task
+
+
+def make_annotation_comparable(annotation):
+    """ Make an annotation comparable.
+
+    Some transformations occur internally when storing a message in
+    Taskwarrior.  Let's flatten those out.
+
+    """
+    return re.sub(
+        r'[\W_]',
+        '',
+        annotation
+    )
+
+
+def get_annotation_value(annotation):
+    """ Can either be a dictionary, or a string. """
+    if isinstance(annotation, dict):
+        return annotation['description']
+    return annotation
+
+
+def annotation_exists_in_list(authoritative, new):
+    comparable_annotations = []
+    for item in authoritative:
+        if not item:
+            continue
+        annotation = get_annotation_value(item)
+        comparable_annotations.append(
+            make_annotation_comparable(annotation)
+        )
+    return make_annotation_comparable(new) in comparable_annotations
+
+
+def merge_annotations(left, right):
+    for annotation in right:
+        if not annotation_exists_in_list(left, annotation):
+            left.append(right)
+
+    return left
+
+
+def annotation_list_to_comparison_map(annotations):
+    mapping = {}
+    for annotation in annotations:
+        comparable = make_annotation_comparable(annotation)
+        mapping[comparable] = annotation
+    return mapping

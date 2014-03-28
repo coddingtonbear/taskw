@@ -337,6 +337,9 @@ class TaskWarriorDirect(TaskWarriorBase):
         """ Marks a task as stopped.  """
         raise NotImplementedError()
 
+    def filter_tasks(self, filter_dict):
+        raise NotImplementedError()
+
     def _task_replace(self, id, category, task):
         def modification(lines):
             lines[id - 1] = taskw.utils.encode_task(task)
@@ -408,27 +411,59 @@ class TaskWarriorShellout(TaskWarriorBase):
     See https://github.com/ralphbean/taskw/pull/15 for discussion
     and https://github.com/ralphbean/taskw/issues/30 for more.
     """
+    DEFAULT_CONFIG_OVERRIDES = {
+        'json.array': 'TRUE',
+        'verbose': 'nothing',
+        'confirmation': 'no',
+    }
+
+    def __init__(self, config_filename="~/.taskrc", config_overrides=None):
+        super(TaskWarriorShellout, self).__init__(config_filename)
+        self.config_overrides = config_overrides if config_overrides else {}
+
+    def get_configuration_override_args(self):
+        args = []
+        config_overrides = self.DEFAULT_CONFIG_OVERRIDES.copy()
+        config_overrides.update(self.config_overrides)
+        for key, value in six.iteritems(config_overrides):
+            args.append(
+                'rc.%s=%s' % (
+                    key,
+                    value if ' ' not in value else '"%s"' % value
+                )
+            )
+        return args
+
     def _execute(self, *args):
         """ Execute a given taskwarrior command with arguments
 
         Returns a 2-tuple of stdout and stderr (respectively).
 
         """
-        command = [
-            'task',
-            'rc:%s' % self.config_filename,
-            'rc.json.array=TRUE',
-            'rc.verbose=nothing',
-            'rc.confirmation=no',
-        ] + [six.text_type(arg) for arg in args]
+        command = (
+            [
+                'task',
+                'rc:%s' % self.config_filename,
+            ]
+            + self.get_configuration_override_args()
+            + [six.text_type(arg) for arg in args]
+        )
+
+        # subprocess is expecting bytestrings only, so nuke unicode if present
+        for i in range(len(command)):
+            if isinstance(command[i], six.text_type):
+                command[i] = command[i].encode('utf-8')
+
         proc = subprocess.Popen(
             command,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
         stdout, stderr = proc.communicate()
+
         if proc.returncode != 0:
-            raise TaskwarriorError(stderr, stdout, proc.returncode)
+            raise TaskwarriorError(command, stderr, stdout, proc.returncode)
+
         return stdout, stderr
 
     def _get_json(self, *args):
@@ -474,12 +509,15 @@ class TaskWarriorShellout(TaskWarriorBase):
         ).communicate()[0]
         return LooseVersion(taskwarrior_version.decode())
 
-    def sync(self):
+    def sync(self, init=False):
         if self.get_version() < LooseVersion('2.3'):
             raise UnsupportedVersionException(
                 "'sync' requires version 2.3 of taskwarrior or later."
             )
-        self._execute('sync')
+        if init is True:
+            self._execute('sync', 'init')
+        else:
+            self._execute('sync')
 
     def load_tasks(self, command='all'):
         """ Returns a dictionary of tasks for a list of command."""
@@ -496,6 +534,35 @@ class TaskWarriorShellout(TaskWarriorBase):
                 self._get_json('status:waiting', 'export'))
 
         return results
+
+    def filter_tasks(self, filter_dict):
+        """ Return a filtered list of tasks from taskwarrior.
+
+        Filter dict should be a dictionary mapping filter constraints
+        with their values.  For example, to return only pending tasks,
+        you could use::
+
+            {'status': 'pending'}
+
+        Or, to return tasks that have the word "Abjad" in their description
+        that are also pending::
+
+            {
+                'status': 'pending',
+                'description.contains': 'Abjad',
+            }
+
+        Filters can be quite complex, and are documented on Taskwarrior's
+        website.
+
+        """
+        query_args = taskw.utils.encode_query(
+            filter_dict,
+        )
+        return self._get_json(
+            'export',
+            *query_args
+        )
 
     def get_task(self, **kw):
         task = dict()
@@ -579,6 +646,7 @@ class TaskWarriorShellout(TaskWarriorBase):
         self._execute(
             task['uuid'],
             'annotate',
+            '--',
             annotation
         )
         id, annotated_task = self.get_task(uuid=task[six.u('uuid')])
@@ -621,12 +689,15 @@ class TaskWarriorShellout(TaskWarriorBase):
 
         # Check if there are annotations, if so, look if they are
         # in the existing task, otherwise annotate the task to add them.
-        new_annotations = set(
+        ttm_annotations = taskw.utils.annotation_list_to_comparison_map(
             self._extract_annotations_from_task(task_to_modify)
         )
-        existing_annotations = set(
+        original_annotations = taskw.utils.annotation_list_to_comparison_map(
             self._extract_annotations_from_task(original_task)
         )
+
+        new_annotations = set(ttm_annotations.keys())
+        existing_annotations = set(original_annotations.keys())
 
         annotations_to_delete = existing_annotations - new_annotations
         annotations_to_create = new_annotations - existing_annotations
@@ -638,10 +709,11 @@ class TaskWarriorShellout(TaskWarriorBase):
         self._execute(task['uuid'], 'modify', modification)
 
         # If there are no existing annotations, add the new ones
-        for annotation in annotations_to_create:
-            self.task_annotate(original_task, annotation)
-        for annotation in annotations_to_delete:
-            self.task_denotate(original_task, annotation)
+        ttm_annotations.update(original_annotations)
+        for annotation_key in annotations_to_create:
+            self.task_annotate(original_task, ttm_annotations[annotation_key])
+        for annotation_key in annotations_to_delete:
+            self.task_denotate(original_task, ttm_annotations[annotation_key])
 
         return self.get_task(uuid=original_task['uuid'])
 
