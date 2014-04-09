@@ -30,7 +30,13 @@ class _BaseTestDB(object):
         dname = tempfile.mkdtemp(prefix='taskw-tests-data')
 
         with open(fname, 'w') as f:
-            f.writelines(['data.location=%s' % dname])
+            f.writelines([
+                'data.location=%s\n' % dname,
+                'uda.somestring.label=Testing String\n',
+                'uda.somestring.type=string\n',
+                'uda.somedate.label=Testing Date\n',
+                'uda.somedate.type=date\n',
+            ])
 
         # Create empty .data files
         for piece in ['completed', 'pending', 'undo']:
@@ -184,6 +190,28 @@ class _BaseTestDB(object):
         # The exact string we get back is dependent on your current TZ
         # ... we'll just "roughly" test it instead of mocking.
         assert(tasks['pending'][0]['entry'].startswith("20110101T"))
+
+    def test_add_with_uda_string(self):
+        self.tw.task_add(
+            "foobar",
+            somestring="this is a uda",
+        )
+        tasks = self.tw.load_tasks()
+        eq_(len(tasks['pending']), 1)
+        task = tasks['pending'][0]
+
+        eq_(task['somestring'], "this is a uda")
+
+    def test_add_with_uda_date(self):
+        self.tw.task_add(
+            "foobar",
+            somedate=datetime.datetime(2011, 1, 1),
+        )
+        tasks = self.tw.load_tasks()
+        eq_(len(tasks['pending']), 1)
+        task = tasks['pending'][0]
+
+        assert(task['somedate'].startswith("20110101T"))
 
     @raises(ValueError)
     def test_completing_completed_task(self):
