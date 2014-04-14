@@ -17,7 +17,7 @@ class AnnotationArrayField(ArrayField):
 
         elements = []
         for annotation in value:
-            if isinstance(value, dict):
+            if isinstance(annotation, dict):
                 elements.append(value['description'])
             else:
                 elements.append(value)
