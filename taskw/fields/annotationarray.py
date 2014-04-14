@@ -18,8 +18,8 @@ class AnnotationArrayField(ArrayField):
         elements = []
         for annotation in value:
             if isinstance(annotation, dict):
-                elements.append(value['description'])
+                elements.append(annotation['description'])
             else:
-                elements.append(value)
+                elements.append(annotation)
 
         return super(AnnotationArrayField, self).deserialize(elements)
