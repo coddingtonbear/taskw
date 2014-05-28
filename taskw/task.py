@@ -63,15 +63,21 @@ class Task(dict):
         'wait': DateField(label='Wait'),
     }
 
-    def __init__(self, data, udas=None):
+    def __init__(self, data=None, udas=None, deserialized=False):
         self._fields = self.FIELDS.copy()
         if udas:
             self._fields.update(udas)
         self._changes = []
 
-        processed = {}
-        for k, v in six.iteritems(data):
-            processed[k] = self._deserialize(k, v)
+        if data is None:
+            data = {}
+
+        if deserialized:
+            processed = data
+        else:
+            processed = {}
+            for k, v in six.iteritems(data):
+                processed[k] = self._deserialize(k, v)
 
         super(Task, self).__init__(processed)
 
