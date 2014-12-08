@@ -16,9 +16,6 @@ from taskw.fields import (
 )
 from taskw.fields.base import Dirtyable, DirtyableList, DirtyableDict
 
-# Sentinel value for not specifying a default
-UNSPECIFIED = object()
-
 
 logger = logging.getLogger(__name__)
 
