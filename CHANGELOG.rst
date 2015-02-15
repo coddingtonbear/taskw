@@ -1,6 +1,98 @@
 Changelog
 =========
 
+1.0.2
+-----
+
+- This one too. `72d61ee33 <https://github.com/ralphbean/taskw/commit/72d61ee334c183a7e819c954099a3690bb9a7aa6>`_
+
+1.0.1
+-----
+
+- Ding this req. `2d9c546eb <https://github.com/ralphbean/taskw/commit/2d9c546eb9da57a75468c479d7abb15047a0c793>`_
+
+1.0.0
+-----
+
+- Don't encode characters nested within queries. `0e0869c9c <https://github.com/ralphbean/taskw/commit/0e0869c9c6034770d1e833bae5784d63d4cd5047>`_
+- Parse uuids from "task add" output when necessary. `6817eb027 <https://github.com/ralphbean/taskw/commit/6817eb0273ceb75870de742b29ec07db98aa7cf0>`_
+- Present args correctly to the taskwarrior parser. `4e11ad049 <https://github.com/ralphbean/taskw/commit/4e11ad049566db690823721201c7b480bea4ab0d>`_
+- Check specifically for this to reduce confusion in test failure output. `92633f4cb <https://github.com/ralphbean/taskw/commit/92633f4cb78b2f0a78d5773b12b0a3a56c497f38>`_
+- Dance around this. `1f83582b9 <https://github.com/ralphbean/taskw/commit/1f83582b93c0b53c02f4c12c9d316ebebf686995>`_
+- Strip out argued uuid if on taskwarrior-2.4 or later. `ad51ab62b <https://github.com/ralphbean/taskw/commit/ad51ab62b560f9b5bf3778966de14ae3746a1a98>`_
+- Comment out failing tests due to bugs in taskwarrior-2.4 and later. `28f71ebf5 <https://github.com/ralphbean/taskw/commit/28f71ebf574d66b4a2053352e9d1e26cd496720f>`_
+- Corrected syntax in completing tasks example `d27eb9557 <https://github.com/ralphbean/taskw/commit/d27eb9557a2180ad499442fba415e9792c338625>`_
+- Added retrieve, update and delete examples `843a68d07 <https://github.com/ralphbean/taskw/commit/843a68d07ee1cf6c7d99d756cc4a2900ec631225>`_
+- Corrected the section on updating tasks `57c33a799 <https://github.com/ralphbean/taskw/commit/57c33a799b73febaf86227e27e71c747b4aaeaab>`_
+- Merge pull request #69 from countermeasure/readme `3ec674957 <https://github.com/ralphbean/taskw/commit/3ec6749576ac5a40f4c57a04fa9c0069afabbb15>`_
+- Added a test for addition of a numeric UDA `4d21be9e7 <https://github.com/ralphbean/taskw/commit/4d21be9e73b1d0d8338327f2ee528fc182a0c047>`_
+- Added failing tests for removal of UDAs `d3c623319 <https://github.com/ralphbean/taskw/commit/d3c6233196760a6fcfe5bf575ea49b1f1800cb9f>`_
+- Allow numeric fields to accept value of None `d92d60e00 <https://github.com/ralphbean/taskw/commit/d92d60e00c44ecce9a0ec567be21ab887d3bdfe7>`_
+- Allow string fields to accept value of None `e04045959 <https://github.com/ralphbean/taskw/commit/e0404595996c1ae957862a02d798ee38de414c38>`_
+- Adding all these tests back in to check out the task-2.4.0.beta3 release. `cd2dda7b5 <https://github.com/ralphbean/taskw/commit/cd2dda7b59ad4674bb62c6dc5d47f462d68e7bc3>`_
+- Do not swallow KeyError and return field-specific null values for known fields. `b1dc1eab7 <https://github.com/ralphbean/taskw/commit/b1dc1eab741a5aacc279e3e40f160e60506d2ce1>`_
+- test: set the timezone to UTC when adding a task `9323d6755 <https://github.com/ralphbean/taskw/commit/9323d6755cebcbde36c0d8fbe10847bce1329f9d>`_
+- Merge pull request #76 from dev-zero/develop `717e65f18 <https://github.com/ralphbean/taskw/commit/717e65f183ac627a3d80e2f66e68167e9c8ae3dc>`_
+- DirtyableDict should be a subclass of dict, not list. `884346444 <https://github.com/ralphbean/taskw/commit/884346444a8e061092f1d9425e64affdf4da705d>`_
+- Simplifications and fixes to `Task.get` and `Task.__setitem__` to reduce surprises. `4c579ce25 <https://github.com/ralphbean/taskw/commit/4c579ce2539849e2ad11dfe3436718df2f4a1218>`_
+- Get the DirectDB method to delete values correctly. `cc1d78a34 <https://github.com/ralphbean/taskw/commit/cc1d78a341553384c4e80c0c4b533683c4c0bf03>`_
+- Remove unused import. `941001d1d <https://github.com/ralphbean/taskw/commit/941001d1dcf7c976fa4713d5ea602ee9f8922b9b>`_
+- Remove test we decided to jettison at the end of #70. `304c1af94 <https://github.com/ralphbean/taskw/commit/304c1af94d3ddc4e34e453daf0ee4beb3edadfc2>`_
+- Merge branch 'uda_handling_alterations' into develop `032c00e70 <https://github.com/ralphbean/taskw/commit/032c00e70fcdf448cb891740c113f3c9019a1d27>`_
+- Add failing test case for `?` escaping `bc6eb5ab3 <https://github.com/ralphbean/taskw/commit/bc6eb5ab37587bfa23331c1c87f8bb3b9375b029>`_
+- Do not quote `?` when used with an exact match. `d29af8436 <https://github.com/ralphbean/taskw/commit/d29af84360086ed17fb36677b1ab4b616e65fd01>`_
+- Merge pull request #78 from djmitche/issue77 `e7be645c1 <https://github.com/ralphbean/taskw/commit/e7be645c1c55190fc2dffda5af4ed65ab6079569>`_
+- py3 fix. `fc16948ea <https://github.com/ralphbean/taskw/commit/fc16948eafff997b143752b535d415388db1b084>`_
+- Use rc.dependency.confirmation=no when running task. `03cee7ae3 <https://github.com/ralphbean/taskw/commit/03cee7ae32e8a8b5a2dfdcc63b2da8e49b10d6cf>`_
+- Squash the (hopefully) last encoding bug w.r.t. task-2.4.0 `14ff33d0c <https://github.com/ralphbean/taskw/commit/14ff33d0c15aea4f38ff74e81243fd893140bc54>`_
+- Issue 72: Instruct travis-ci to test taskw using multiple taskwarrior versions. `8a5efc3cf <https://github.com/ralphbean/taskw/commit/8a5efc3cfe8eed37f471a9c2d3235944fdd44cc3>`_
+- Issue 72: Install some required packages. `7489ca567 <https://github.com/ralphbean/taskw/commit/7489ca567603e1343d8da32e19d5878a451d21eb>`_
+- Issue 72: Use sudo for task installation. `cf68420a4 <https://github.com/ralphbean/taskw/commit/cf68420a414ab843222887f46fcaa8efbfd98458>`_
+- Issue 72: Use sudo for installing packages; of course. `9a11bb9e9 <https://github.com/ralphbean/taskw/commit/9a11bb9e91a67f8610fa77db3aca7486329295df>`_
+- Issue 72: Switch back to package directory after installing taskwarrior. `11bc2fe12 <https://github.com/ralphbean/taskw/commit/11bc2fe1292c1fdcdfd7af3f2be221f8a065d720>`_
+- Merge pull request #82 from coddingtonbear/72_test_under_multiple_taskwarrior_versions `c8edd25b1 <https://github.com/ralphbean/taskw/commit/c8edd25b1e33a5b4f55890a05b158221b6bb5b44>`_
+- Issue 83: Adding basic tox testing framework for local testing in multiple environments on each taskwarrior version. `e4a3d6977 <https://github.com/ralphbean/taskw/commit/e4a3d6977feb291ee4742e79517fc5563a5c5d2c>`_
+- Issue 85: Generate a list of keys prior to beginning iteration. `e7ed3ccb1 <https://github.com/ralphbean/taskw/commit/e7ed3ccb127ff98f9e5587569dab4fa9c2545d69>`_
+- Issue 83: Allow passing positional args to py.test (so you can run one test at a time, for example). `e0df14111 <https://github.com/ralphbean/taskw/commit/e0df14111feeae52261ba0efadec22611605141c>`_
+- Merge pull request #86 from ralphbean/85_fix_python3k_key_iteration `d3339df88 <https://github.com/ralphbean/taskw/commit/d3339df88130348336b79580f1d43e6d7e7dabb2>`_
+- Issue 83: Use nose for tests rather than py.test. `72c1aee03 <https://github.com/ralphbean/taskw/commit/72c1aee036cb38d27ced98b3d97445184c7b3a34>`_
+- Merge branch 'develop' into feature/task-2.4 `55090cd9f <https://github.com/ralphbean/taskw/commit/55090cd9ffbaf9de4d8f22259b5ca4cc7e6467d2>`_
+- Apply the unicode-sandwich principle. `05e4e830d <https://github.com/ralphbean/taskw/commit/05e4e830d7d4744d36b49bda2d0fee36c956434e>`_
+- Add python-3.4 to the mix `7f0b836ba <https://github.com/ralphbean/taskw/commit/7f0b836ba8c59aaf384c3ab0a16a8b847e4ccdd5>`_
+- Merge branch '83_tox_testing' into feature/task-2.4 `bbd7484f9 <https://github.com/ralphbean/taskw/commit/bbd7484f98007196d50906e42f2ddc34540d59b3>`_
+- Fix py3 iterator behavior. `058eed0db <https://github.com/ralphbean/taskw/commit/058eed0db98e343980e36a1dd7f0ac53c9a96032>`_
+- Add python-3.4 to our travis matrix. `e2a13f5d1 <https://github.com/ralphbean/taskw/commit/e2a13f5d1f6391c6a8f5debd8e4d031184a9e806>`_
+- Encode sub-queries differently for different versions of taskwarrior. `01682adda <https://github.com/ralphbean/taskw/commit/01682adda1018f20c6eaa94b0be85933dd76d8e5>`_
+- I'm not sure how this test ever passed, so I'm going to punt. `af343d230 <https://github.com/ralphbean/taskw/commit/af343d23048b20c367ea07f41d75285347d09b21>`_
+- Add taskwarrior-2.4.1 in there. `17e880af2 <https://github.com/ralphbean/taskw/commit/17e880af2506b590cd1219b637392c7d8ff15403>`_
+- Throw v2.4.1 in here too. `a5dd24c9a <https://github.com/ralphbean/taskw/commit/a5dd24c9af31ee019c9473532a4931df03f17f0c>`_
+- Since this hasn't been released yet, use the branch name. `f93bf019f <https://github.com/ralphbean/taskw/commit/f93bf019f8a6238c8b5b999192ce9f420d2c4e72>`_
+- That stuff didn't seem to work.  No big.  Release coming soon. `875776aa5 <https://github.com/ralphbean/taskw/commit/875776aa507bf4358d9cecd05a339071db6f656d>`_
+- Merge pull request #68 from ralphbean/feature/task-2.4 `934aac027 <https://github.com/ralphbean/taskw/commit/934aac0272f4dfdb33ef6538c24b48ee435cbc88>`_
+- Adding test that ensures we can store and retrieve values by UDA. `35996b295 <https://github.com/ralphbean/taskw/commit/35996b295185102b22b6bf8c774adf0ea6c51ab1>`_
+- Adding another failed test for filtering of exported tasks. `722f7902b <https://github.com/ralphbean/taskw/commit/722f7902b7971aef613a4374f82e18924714b5e4>`_
+- Adjust url search test to "work" `8432a2187 <https://github.com/ralphbean/taskw/commit/8432a218763b0956294b543e6edb8f06a84a34d4>`_
+- Fix parenthetical subqueries as per @coddingtonbear's suggestion. `1387ed321 <https://github.com/ralphbean/taskw/commit/1387ed321682180bb9498b25e8f935ede891be3d>`_
+- Fixes #88; Works around TW-1510 and TD-87. `db1cb64ad <https://github.com/ralphbean/taskw/commit/db1cb64ad4a378d8e30dd2a424402cd7037c50e2>`_
+- Merge pull request #89 from coddingtonbear/88_circumvent_taskw_bug_wrt_empty_priority `2e32e446c <https://github.com/ralphbean/taskw/commit/2e32e446cc8b7c53cdcc6093f25736cf25ebb035>`_
+- Move version string. `19dc59b2e <https://github.com/ralphbean/taskw/commit/19dc59b2e6c604a1d12d33be22d7b702dcb54680>`_
+
+0.8.6
+-----
+
+- Turns out unittest2 is a backport from py2.7, not from py3.x. `4e605403c <https://github.com/ralphbean/taskw/commit/4e605403c6bc750ec1c330237b77b3f162536d8f>`_
+
+0.8.5
+-----
+
+- Do not allow taskwarrior to attempt to parse the string passed-in to denotate. `e9716a2e9 <https://github.com/ralphbean/taskw/commit/e9716a2e9fabd4558c81055e4a378fb3190fa3d0>`_
+- Merge pull request #64 from coddingtonbear/make_denotate_use_unparsed_string_too `43fc07638 <https://github.com/ralphbean/taskw/commit/43fc076388d74f548bfab1a8d9148293d5bca1a7>`_
+- Decode the configuration file in UTF-8 mode. `fa491d7ce <https://github.com/ralphbean/taskw/commit/fa491d7ceefc764c328b7674fac95afb52dd9711>`_
+- Fixing a bug in which, while merging two configuration trees, we encounter the dict/string problem.  Fixes #65. `477cc8b65 <https://github.com/ralphbean/taskw/commit/477cc8b6539599d783f7ae9750355ad24492ac3c>`_
+- Merge pull request #66 from coddingtonbear/handle_unicode_configs `60218eef7 <https://github.com/ralphbean/taskw/commit/60218eef7942cb928b2462723067c52603c7046d>`_
+- Merge pull request #67 from coddingtonbear/merge_trees_dict_nonsense `666d21ce5 <https://github.com/ralphbean/taskw/commit/666d21ce546873eab808c05b92d933b66a127b0b>`_
+- 0.8.4 `fa0b386ee <https://github.com/ralphbean/taskw/commit/fa0b386ee191989e1942701a988dd53fa8dddb94>`_
+
 0.8.3
 -----
 
