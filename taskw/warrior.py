@@ -102,7 +102,7 @@ class TaskWarriorBase(with_metaclass(abc.ABCMeta, object)):
                 if isinstance(v, dict):
                     annotations.append(v['description'])
                 else:
-                    annotations.append(v)
+                    annotations.append(six.text_type(v))
 
         for key in list(task.keys()):
             if key.startswith('annotation_'):
@@ -699,11 +699,8 @@ class TaskWarriorShellout(TaskWarriorBase):
                     stderr,
                 )
             )
-
-        if annotations and 'uuid' in added_task:
-            for annotation in annotations:
-                self.task_annotate(added_task, annotation)
-
+        for annotation in annotations:
+            self.task_annotate(added_task, annotation)
         id, added_task = self.get_task(uuid=added_task[six.u('uuid')])
         return added_task
 
